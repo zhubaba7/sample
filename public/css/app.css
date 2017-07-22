@@ -5781,6 +5781,11 @@ p {
   #logo:hover {
     color: #fff; }
 
+#logout {
+  cursor: default; }
+  #logout:hover {
+    background-color: transparent; }
+
 /* footer */
 footer {
   margin-top: 45px;
@@ -5845,6 +5850,9 @@ input, textarea, select, .uneditable-input {
 
 input {
   height: auto !important; }
+
+.checkbox input[type='checkbox'] {
+  width: auto; }
 
 .panel {
   margin-top: 50px; }
