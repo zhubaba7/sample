@@ -38,6 +38,21 @@ class User extends Model implements AuthenticatableContract,
     protected $hidden = ['password', 'remember_token'];
 
     /**
+     * boot方法在用户模型加载完成后执行，Eloquent提供的事件监听creating
+     * 需要放在该方法中
+     *
+     * @var array
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->activation_token = str_random(30);
+        });
+    }
+
+    /**
      * Avatar service
      *
      * @var $size int

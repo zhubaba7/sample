@@ -17,12 +17,13 @@ class UsersTableSeeder extends Seeder
         $users = factory(User::class)->times(50)->make();
         User::insert($users->toArray());
 
-        //修改一个数据，方便登陆测试，没什么特别意义
+        //修改第一个数据，方便登陆测试，没什么特别意义
         $user = User::find(1);
         $user->name = 'Aufree';
         $user->email = 'Aufree@126.com';
         $user->password = bcrypt('password');
         $user->is_admin = true;
+        $user->activated = true;
         $user->save();
     }
 }

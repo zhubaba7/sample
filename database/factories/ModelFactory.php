@@ -13,12 +13,16 @@
 
 $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     $date_time = $faker->date.' '.$faker->time;
+    //静态变量，不能域外使用，但下次调用函数前其值保持
     static $password;
 
     return [
         'name' => $faker->name,
         'email' => $faker->safeEmail,
         'is_admin' => false,
+        'activated' => true,
+        //此处是三目运算符，如果$password有值，则不处理（问号后为空），
+        //否则给它赋值明文secret的加密形式
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
         'created_at' => $date_time,
