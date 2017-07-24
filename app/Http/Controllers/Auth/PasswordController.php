@@ -20,6 +20,9 @@ class PasswordController extends Controller
 
     use ResetsPasswords;
 
+    //原来机制重置密码后，转向/home，示例里转向到/
+    protected $redirectPath = '/';
+
     /**
      * Create a new password controller instance.
      *
