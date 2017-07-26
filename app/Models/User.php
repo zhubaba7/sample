@@ -62,4 +62,15 @@ class User extends Model implements AuthenticatableContract,
         $hash = md5(strtolower(trim($this->attributes['email'])));
         return "http://www.gravatar.com/avatar/$hash?s=$size";
     }
+
+    //和Status模型互动，一个用户可以拥有多条动态
+    public function statuses()
+    {
+        return $this->hasMany(Status::class);
+    }
+
+    public function feed()
+    {
+        return $this->statuses()->orderBy('created_at', 'desc');
+    }
 }

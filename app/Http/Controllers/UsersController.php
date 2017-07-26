@@ -40,10 +40,14 @@ class UsersController extends Controller
         return view('users.create');
     }
 
+    //用户显示页
     public function show($id)
     {
         $user = User::findOrFail($id);
-        return view('users.show', compact('user'));
+        $statuses = $user->statuses()
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(30);
+        return view('users.show', compact('user', 'statuses'));
     }
 
     //用户注册
@@ -98,6 +102,7 @@ class UsersController extends Controller
         });
     }
 
+    //编辑用户
     public function edit($id)
     {
         $user = User::findOrFail($id);
@@ -105,6 +110,7 @@ class UsersController extends Controller
         return view('users.edit', compact('user'));
     }
 
+    //更新用户
     public function update($id, Request $request)
     {
         $this->validate($request, [
