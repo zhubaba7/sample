@@ -11,6 +11,11 @@
       </div>
     </div>
     <div class="col-md-12">
+      <!--check方法判断用户是否已登陆-->
+      @if (Auth::check())
+        @include('users._follow_form')
+      @endif
+
       @if (count($statuses) > 0)
         <ol class="statuses">
           @foreach ($statuses as $status)

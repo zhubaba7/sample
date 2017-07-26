@@ -10,6 +10,8 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
+use Auth;
+
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
                                     CanResetPasswordContract
@@ -69,8 +71,52 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany(Status::class);
     }
 
+    //动态流
     public function feed()
     {
-        return $this->statuses()->orderBy('created_at', 'desc');
+        //pluck把自己去关注的人的id分离出来
+        $user_ids = Auth::user()->followings->pluck('id')->toArray();
+        array_push($user_ids, Auth::user()->id);
+
+        //Eloquent关联的预加载方法with，避免了N+1查找的问题
+        return Status::whereIn('user_id', $user_ids)
+                                ->with('user')
+                                ->orderBy('created_at', 'desc');
+        //return $this->statuses()->orderBy('created_at', 'desc');
+    }
+
+    //粉丝列表
+    public function followers()
+    {
+        //通过$user->followers()获取粉丝列表
+        return $this->belongsToMany(User::Class, 'followers', 'user_id', 'follower_id');
+    }
+
+    //关注列表
+    public function followings()
+    {
+        //通过$user->followings()获取自己关注的用户列表
+        return $this->belongsToMany(User::Class, 'followers', 'follower_id', 'user_id');
+    }
+
+    public function follow($user_ids)
+    {
+        if (!is_array($user_ids)) {
+            $user_ids = compact('user_ids');
+        }
+        $this->followings()->sync($user_ids, false);
+    }
+
+    public function unfollow($user_ids)
+    {
+        if (!is_array($user_ids)) {
+            $user_ids = compact('user_ids');
+        }
+        $this->followings()->detach($user_ids);
+    }
+
+    public function isFollowing($user_id)
+    {
+        return $this->followings->contains($user_id);
     }
 }

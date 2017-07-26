@@ -13,6 +13,9 @@
         <section class="user-info">
           @include('shared.user_info', ['user' => Auth::user()])
         </section>
+        <section class="stats">
+          @include('shared.stats', ['user' => Auth::user()])
+        </section>
       </aside>
     </div>
   @else
